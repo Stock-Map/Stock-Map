@@ -2,11 +2,11 @@
 
 ## Integrantes da Equipe
 
-* João Vitor Cerutti
-* Luan Henrique Martins
-* Lucas Alexandre Silva
-* Miguel Otávio Trindade
-* Otávio Augustus Oliveira
+* João Vitor Cerutti (Desenvolvedor Front End)
+* Luan Henrique Martins (Analista de dados)
+* Lucas Alexandre Silva (Desenvolvedor Back End)
+* Miguel Otávio Trindade (Engenheiro de dados)
+* Otávio Augustus Oliveira (Desenvolvedor Web Design)
 
 ---
 
