@@ -22,18 +22,16 @@ A plataforma possibilita o controle de produtos em estoque, acompanhamento de en
 
 ### Frontend
 
-* HTML5
-* CSS3
+* HTML
+* CSS
 * JavaScript
 
 ### Backend
 
-* A definir
+* Python - Flask
 
 ### Banco de Dados
-
-* A definir
-
+* MySQL
 ---
 
 ## Funcionalidades
