@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Stock Map</title>
+    <link rel="icon" type="image/svg+xml" href="img/stockmap-logo.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Fira+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Ir para o conteudo</a>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Navegacao principal">
+        <div class="brand">
+          <img class="brand-logo" src="img/stockmap-logo.svg" alt="Stockmap Logistica e Estoque">
+        </div>
+        <nav class="nav-list">
+          <button class="nav-link active" type="button" data-view="painel">Painel</button>
+          <button class="nav-link" type="button" data-view="fornecedores">Fornecedores</button>
+          <button class="nav-link" type="button" data-view="lojistas">Lojistas</button>
+          <button class="nav-link" type="button" data-view="produtos">Produtos</button>
+          <button class="nav-link" type="button" data-view="pedidos">Pedidos</button>
+          <button class="nav-link" type="button" data-view="alertas">Alertas</button>
+          <button class="nav-link" type="button" data-view="relatorios">Relatorios</button>
+          <button class="nav-link" type="button" data-view="rotas">Rotas</button>
+          <button class="nav-link" type="button" data-view="movimentacoes">Movimentacoes</button>
+        </nav>
+      </aside>
+
+      <main id="main" class="content">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Disponibilidade em tempo real</p>
+            <h1 id="titulo-tela">Painel</h1>
+          </div>
+          <div class="topbar-actions">
+            <input id="busca-produto" class="search-field" type="search" placeholder="Buscar produto ou SKU" aria-label="Buscar produto ou SKU">
+            <button id="botao-atualizar" class="btn btn-secondary" type="button">Atualizar</button>
+          </div>
+        </header>
+
+        <section id="painel" class="view active" aria-labelledby="titulo-tela">
+          <div class="metric-grid" id="grade-metricas"></div>
+          <div class="chart-grid">
+            <section class="panel chart-panel">
+              <div class="panel-heading">
+                <h2>Pedidos por status</h2>
+                <span class="pill">Distribuicao</span>
+              </div>
+              <div class="chart-box"><canvas id="grafico-status-pedidos"></canvas></div>
+            </section>
+            <section class="panel chart-panel">
+              <div class="panel-heading">
+                <h2>Situacao do estoque</h2>
+                <span class="pill">Produtos</span>
+              </div>
+              <div class="chart-box"><canvas id="grafico-status-estoque"></canvas></div>
+            </section>
+            <section class="panel chart-panel">
+              <div class="panel-heading">
+                <h2>Top produtos por demanda</h2>
+                <span class="pill">Top 5</span>
+              </div>
+              <div class="chart-box"><canvas id="grafico-top-produtos"></canvas></div>
+            </section>
+            <section class="panel chart-panel">
+              <div class="panel-heading">
+                <h2>Faturamento por fornecedor</h2>
+                <span class="pill">Top 5</span>
+              </div>
+              <div class="chart-box"><canvas id="grafico-faturamento-fornecedor"></canvas></div>
+            </section>
+          </div>
+          <div class="split-grid">
+            <section class="panel">
+              <div class="panel-heading">
+                <h2>Estoque critico</h2>
+                <span class="pill danger" id="contador-alertas">0 alertas</span>
+              </div>
+              <div id="painel-alertas" class="stack-list"></div>
+            </section>
+            <section class="panel">
+              <div class="panel-heading">
+                <h2>Ultimos pedidos</h2>
+                <span class="pill">Historico</span>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Pedido</th>
+                      <th>Lojista</th>
+                      <th>Fornecedor</th>
+                      <th>Status</th>
+                      <th>Total</th>
+                    </tr>
+                  </thead>
+                  <tbody id="pedidos-recentes"></tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section id="fornecedores" class="view" aria-labelledby="titulo-tela">
+          <div class="form-grid">
+            <form id="form-fornecedor" class="panel form-panel">
+              <h2>Novo fornecedor</h2>
+              <label>Nome<input name="nome" required></label>
+              <label>CNPJ<input name="cnpj"></label>
+              <label>Responsavel<input name="nome_contato" required></label>
+              <label>Email<input name="email" type="email" required></label>
+              <label>Telefone<input name="telefone" type="tel"></label>
+              <label>Endereco<input name="endereco"></label>
+              <div class="inline-fields">
+                <label>Cidade<input name="cidade"></label>
+                <label>UF<input name="estado" maxlength="2"></label>
+              </div>
+              <div class="inline-fields">
+                <label>Latitude<input name="latitude" type="number" step="0.0000001"></label>
+                <label>Longitude<input name="longitude" type="number" step="0.0000001"></label>
+              </div>
+              <button class="btn btn-primary" type="submit">Cadastrar fornecedor</button>
+            </form>
+            <section class="panel">
+              <div class="panel-heading">
+                <h2>Fornecedores cadastrados</h2>
+                <span class="pill" id="contador-fornecedores">0</span>
+              </div>
+              <div id="lista-fornecedores" class="entity-list"></div>
+            </section>
+          </div>
+        </section>
+
+        <section id="lojistas" class="view" aria-labelledby="titulo-tela">
+          <div class="form-grid">
+            <form id="form-lojista" class="panel form-panel">
+              <h2>Novo lojista</h2>
+              <label>Nome<input name="nome" required></label>
+              <label>CNPJ<input name="cnpj"></label>
+              <label>Responsavel<input name="nome_contato" required></label>
+              <label>Email<input name="email" type="email" required></label>
+              <label>Telefone<input name="telefone" type="tel"></label>
+              <label>Endereco<input name="endereco"></label>
+              <div class="inline-fields">
+                <label>Cidade<input name="cidade"></label>
+                <label>UF<input name="estado" maxlength="2"></label>
+              </div>
+              <div class="inline-fields">
+                <label>Latitude<input name="latitude" type="number" step="0.0000001"></label>
+                <label>Longitude<input name="longitude" type="number" step="0.0000001"></label>
+              </div>
+              <button class="btn btn-primary" type="submit">Cadastrar lojista</button>
+            </form>
+            <section class="panel">
+              <div class="panel-heading">
+                <h2>Lojistas cadastrados</h2>
+                <span class="pill" id="contador-lojistas">0</span>
+              </div>
+              <div id="lista-lojistas" class="entity-list"></div>
+            </section>
+          </div>
+        </section>
+
+        <section id="produtos" class="view" aria-labelledby="titulo-tela">
+          <div class="form-grid">
+            <form id="form-produto" class="panel form-panel">
+              <h2>Novo produto</h2>
+              <label>Fornecedor<select name="fornecedor_id" id="produto-fornecedor" required></select></label>
+              <label>SKU<input name="sku" required></label>
+              <label>Nome<input name="nome" required></label>
+              <label>Categoria<input name="categoria"></label>
+              <div class="inline-fields">
+                <label>Preco<input name="preco_unitario" type="number" step="0.01" min="0" required></label>
+                <label>Quantidade<input name="quantidade" type="number" min="0" value="0"></label>
+              </div>
+              <div class="inline-fields">
+                <label>Minimo<input name="estoque_minimo" type="number" min="0" value="5"></label>
+                <label>Prazo entrega<input name="prazo_entrega_dias" type="number" min="0" value="2"></label>
+              </div>
+              <button class="btn btn-primary" type="submit">Cadastrar produto</button>
+            </form>
+            <section class="panel">
+              <div class="panel-heading">
+                <h2>Produtos e estoque</h2>
+                <span class="pill live">Tempo real</span>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Produto</th>
+                      <th>Fornecedor</th>
+                      <th>SKU</th>
+                      <th>Estoque</th>
+                      <th>Preco</th>
+                      <th>Acao</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tabela-produtos"></tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section id="pedidos" class="view" aria-labelledby="titulo-tela">
+          <form id="filtros-pedidos" class="panel filter-bar">
+            <label>Status
+              <select name="status">
+                <option value="">Todos</option>
+                <option value="pendente">Pendente</option>
+                <option value="confirmado">Confirmado</option>
+                <option value="despachado">Despachado</option>
+                <option value="entregue">Entregue</option>
+                <option value="cancelado">Cancelado</option>
+              </select>
+            </label>
+            <label>Lojista<select name="lojista_id" id="filtro-pedido-lojista"></select></label>
+            <label>De<input name="data_inicio" type="date"></label>
+            <label>Ate<input name="data_fim" type="date"></label>
+            <button class="btn btn-secondary" type="submit">Filtrar</button>
+            <button class="btn btn-secondary" type="button" id="limpar-filtros-pedidos">Limpar</button>
+          </form>
+          <div class="form-grid">
+            <form id="form-pedido" class="panel form-panel">
+              <h2>Novo pedido</h2>
+              <label>Lojista<select name="lojista_id" id="pedido-lojista" required></select></label>
+              <label>Fornecedor<select name="fornecedor_id" id="pedido-fornecedor" required></select></label>
+              <div class="order-line">
+                <label>Produto<select id="pedido-produto"></select></label>
+                <label>Qtd<input id="pedido-quantidade" type="number" min="1" value="1"></label>
+                <button id="adicionar-item-pedido" class="btn btn-secondary" type="button">Adicionar item</button>
+              </div>
+              <div id="itens-pedido" class="draft-items"></div>
+              <label>Endereco de entrega<input name="endereco_entrega"></label>
+              <label>Observacoes<textarea name="observacoes" rows="3"></textarea></label>
+              <button class="btn btn-primary" type="submit">Registrar pedido</button>
+            </form>
+            <section class="panel">
+              <div class="panel-heading">
+                <h2>Historico de pedidos</h2>
+                <span class="pill" id="contador-pedidos">0</span>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Lojista</th>
+                      <th>Fornecedor</th>
+                      <th>Itens</th>
+                      <th>Status</th>
+                      <th>Total</th>
+                      <th>Acao</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tabela-pedidos"></tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section id="alertas" class="view" aria-labelledby="titulo-tela">
+          <section class="panel">
+            <div class="panel-heading">
+              <h2>Alertas automaticos</h2>
+              <span class="pill danger" id="contador-alertas-tela">0</span>
+            </div>
+            <div id="lista-alertas" class="stack-list"></div>
+          </section>
+        </section>
+
+        <section id="relatorios" class="view" aria-labelledby="titulo-tela">
+          <form id="filtros-relatorio" class="panel filter-bar">
+            <label>De<input name="data_inicio" type="date"></label>
+            <label>Ate<input name="data_fim" type="date"></label>
+            <button class="btn btn-secondary" type="submit">Aplicar periodo</button>
+            <span class="pill" id="periodo-relatorio">Ultimos 30 dias</span>
+          </form>
+          <div class="split-grid">
+            <section class="panel">
+              <div class="panel-heading">
+                <h2>Demanda por produto</h2>
+                <span class="pill">Top 5</span>
+              </div>
+              <div id="top-produtos" class="bar-list"></div>
+            </section>
+            <section class="panel">
+              <div class="panel-heading">
+                <h2>Desempenho por fornecedor</h2>
+                <span class="pill">Pedidos</span>
+              </div>
+              <div id="desempenho-fornecedores" class="bar-list"></div>
+            </section>
+          </div>
+        </section>
+
+        <section id="rotas" class="view" aria-labelledby="titulo-tela">
+          <div class="form-grid">
+            <form id="form-rota" class="panel form-panel">
+              <h2>Planejar entrega</h2>
+              <label>Fornecedor<select name="fornecedor_id" id="rota-fornecedor" required></select></label>
+              <label>Notas<textarea name="observacoes" rows="3"></textarea></label>
+              <button class="btn btn-primary" type="submit">Gerar rota</button>
+            </form>
+            <section class="panel">
+              <div class="panel-heading">
+                <h2>Rotas planejadas</h2>
+                <span class="pill" id="contador-rotas">0</span>
+              </div>
+              <div id="lista-rotas" class="route-list"></div>
+            </section>
+          </div>
+        </section>
+
+        <section id="movimentacoes" class="view" aria-labelledby="titulo-tela">
+          <form id="filtros-movimentacoes" class="panel filter-bar">
+            <label>Produto<select name="produto_id" id="filtro-movimentacao-produto"></select></label>
+            <label>Fornecedor<select name="fornecedor_id" id="filtro-movimentacao-fornecedor"></select></label>
+            <label>De<input name="data_inicio" type="date"></label>
+            <label>Ate<input name="data_fim" type="date"></label>
+            <button class="btn btn-secondary" type="submit">Filtrar</button>
+            <button class="btn btn-secondary" type="button" id="limpar-filtros-movimentacoes">Limpar</button>
+          </form>
+          <section class="panel">
+            <div class="panel-heading">
+              <h2>Historico de estoque</h2>
+              <span class="pill" id="contador-movimentacoes">0</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Data</th>
+                    <th>Produto</th>
+                    <th>Fornecedor</th>
+                    <th>Tipo</th>
+                    <th>Variacao</th>
+                    <th>Motivo</th>
+                  </tr>
+                </thead>
+                <tbody id="tabela-movimentacoes"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,32 @@
+# Segredos
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+id_rsa*
+*credential*
+serviceAccount*.json
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+# Node
+node_modules/
+.next/
+dist/
+build/
+# Artefatos / dados locais
+*.apk
+*.zip
+*.sqlite
+*.sqlite3
+# Logs e temporários
+*.log
+nohup.out
+*.tmp
+*.swp
+uploads/
